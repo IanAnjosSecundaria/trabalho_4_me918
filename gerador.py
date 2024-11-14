@@ -1,7 +1,13 @@
 """
 Funções de geração de função
 """
+
+# Bibliotecas autorais
 from funcoes_especiais import *
+
+# Bibliotecas não autorais
+from random import random
+
 
 def gerador(funcao:str, argumentos:list = []) -> "lambda":
     """
