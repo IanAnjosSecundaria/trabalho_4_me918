@@ -41,7 +41,7 @@ def server(input, output, session):
     @output
     @render.ui
     def dynamic_inputs():
-        boxes = [ui.input_numeric(f"arg_{i}", f"Argumento '{arg}'", value="") for i, arg in enumerate(dynamic_boxes())]
+        boxes = [ui.input_numeric(f"arg_{i}", f"Argumento '{arg}'", value = 1) for i, arg in enumerate(dynamic_boxes())]
         return boxes
 
     # Cria e renderiza o gráfico usando Matplotlib
@@ -64,6 +64,7 @@ def server(input, output, session):
             f"Limite Inferior: {input.input_limite_superior()}\n"
             f"Argumentos: {input.args_input()}\n"
             #f"Argumentos Dinâmicos: {dynamic_values}"
+            f"{session.input._map.keys()}"
         )
         return output_text
 
