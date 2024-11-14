@@ -68,21 +68,19 @@ def server(input, output, session):
         for key in dynamic_values:
             args[key] = float(session.input[f"arg_{key}"]())
 
-
-        while True:
-            try:
-                funcao_usuario = gerador(funcao = input.input_funcao(), argumentos = list(args.keys()))
-                
-                total:float = input.input_limite_superior() - input.input_limite_inferior()
-                n:int = 200
-                x:list = [input.input_limite_inferior() + i * total / (n-1) for i in range(n)]
-                y:list = [funcao_usuario(x = x, **args) for x in x]  # Criação de valores para o eixo y
-                break
+        try:
+            funcao_usuario = gerador(funcao = input.input_funcao(), argumentos = list(args.keys()))
             
-            except Exception as error:
-                updated_text:str = f"{input.args_input()}," + error.name
-                session.send_input_message("args_input", {"value": updated_text})
-                break
+            total:float = input.input_limite_superior() - input.input_limite_inferior()
+            n:int = 200
+            x:list = [input.input_limite_inferior() + i * total / (n-1) for i in range(n)]
+            y:list = [funcao_usuario(x = x, **args) for x in x]  # Criação de valores para o eixo y
+            
+        
+        except Exception as error:
+            updated_text:str = f"{input.args_input()}," + error.name
+            session.send_input_message("args_input", {"value": updated_text})
+                
                             
 
         fig, ax = plt.subplots()
