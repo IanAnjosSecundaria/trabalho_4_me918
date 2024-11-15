@@ -82,9 +82,10 @@ def server(input, output, session):
             total:float = input.input_limite_superior() - input.input_limite_inferior()
             
             tempo_medio = -time()
-            funcao_usuario(x = 0, **args)
+            funcao_usuario(x = input.input_limite_inferior(), **args)
+            funcao_usuario(x = input.input_limite_superior(), **args)
             tempo_medio += time()
-            n:int = max(200, min(10, int(0.1/tempo_medio)))
+            n:int = min(200, max(10, int(0.1/tempo_medio)))
 
             x:list = [input.input_limite_inferior() + i * total / (n-1) for i in range(n)]
             
@@ -108,7 +109,7 @@ def server(input, output, session):
         for line in horizontal_lines:
             ax.axhline(y = line, color = 'gray', linestyle = '--', linewidth = 0.5)
             
-        ax.set_title(f"Grafico da função [{input.input_limite_inferior()}, {input.input_limite_superior()}], n: {n}, dif = {dif_}")
+        ax.set_title(f"Grafico da função [{input.input_limite_inferior()}, {input.input_limite_superior()}], n: {n}, dif: {dif_}")
     
         return fig
 

@@ -9,7 +9,7 @@ def fat(numero:int, o = None) -> int:
     """
     Número fatorial
     """
-    assert numero > 0, "Não pode numero negativo"
+    assert numero >= 0, "Não pode numero negativo"
     if numero == 0:
         return 1
     elif o == None:
