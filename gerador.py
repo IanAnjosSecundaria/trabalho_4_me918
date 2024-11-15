@@ -4,6 +4,7 @@ Funções de geração de função
 
 # Bibliotecas autorais
 from funcoes_especiais import *
+from distribuicoes import *
 
 # Bibliotecas não autorais
 from random import random
