@@ -103,7 +103,7 @@ def server(input, output, session):
         ax.plot(x, y)  # Gráfico simples com os limites
 
         min_, max_ = min(y), max(y)
-        dif_:int = 10**int(log10(max_ - min_))
+        dif_:int = 10**int(log10(max_ - min_) - 1)
         horizontal_lines = [i*dif_ for i in range(int(min_/dif_), int(max_/dif_ + 1))]
         for line in horizontal_lines:
             ax.axhline(y = line, color = 'gray', linestyle = '--', linewidth = 0.5)
