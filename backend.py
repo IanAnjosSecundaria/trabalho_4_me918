@@ -6,32 +6,20 @@ Backend shiny
 from gerador import gerador
 
 # Bibliotecas não autorais
+import asyncio
 from os import path
 from time import time
 from math import log10
-from shiny import App, ui, render, reactive
+from shiny import App, ui, render, reactive, Inputs, Outputs, Session
+from shiny.types import FileInfo
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 from urllib.parse import urlencode, parse_qs
 
-# Criar o script como uma string
-custom_script = """
-<script>
-Shiny.addCustomMessageHandler("update_query_string", function(params) {
-    const url = new URL(window.location.href);
-    Object.keys(params).forEach(key => {
-        url.searchParams.set(key, params[key]);
-    });
-    window.history.replaceState({}, '', url);
-});
-</script>
-"""
-
 # Adicionar o script ao <head>
 head_content = ui.tags.head(
-    ui.tags.title("Minha Aplicação Shiny"),
-    ui.HTML(custom_script),
+    ui.tags.title("trabalho_4_me918"),
 )
 
 app_ui = ui.page_fluid(
@@ -43,6 +31,8 @@ app_ui = ui.page_fluid(
             ui.input_numeric("input_limite_inferior", "Limite Inferior", value = 0),
             ui.input_numeric("input_limite_superior", "Limite Superior", value = 10),
             ui.input_text("args_input", "Argumentos (separado por vírgula)", placeholder="argumento_1, argumento_2, argumento_3"),
+            ui.input_file("upload_txt", "Carregar arquivo .txt", multiple = False, accept = [".txt"]),
+            ui.download_button("download_txt", "Baixar arquivo .txt"),
         ),
         ui.column(
             3,
@@ -157,6 +147,28 @@ def server(input, output, session):
                 return f.read()
         else:
             return "O arquivo README.md não foi encontrado."
+
+
+    # Download
+    @render.download(
+        filename = lambda: f"requisicao_atual.txt"
+    )
+    async def download_txt():
+        await asyncio.sleep(0.25)
+        yield "Função: " + input.input_funcao() + "\n"
+        yield "Limite Inferior: " + str(input.input_limite_inferior()) + "\n"
+        yield "Limite Superior: " + str(input.input_limite_superior()) + "\n"
+        yield "Argumentos: " + input.args_input() + "\n"
+
+    # Upload
+    @reactive.calc
+    def parsed_file():
+        file: list[FileInfo] | None = input.upload_txt()
+        print(file)
+        if file is None:
+            return None
+        print(file[0])
+        return file[0]["datapath"]
 
 
 app = App(app_ui, server)
