@@ -33,6 +33,7 @@ app_ui = ui.page_fluid(
             ui.input_text("args_input", "Argumentos (separado por vírgula)", placeholder="argumento_1, argumento_2, argumento_3"),
             ui.input_file("upload_txt", "Carregar arquivo .txt", multiple = False, accept = [".txt"]),
             ui.download_button("download_txt", "Baixar arquivo .txt"),
+            ui.output_text("file_content"),
         ),
         ui.column(
             3,
@@ -50,7 +51,7 @@ app_ui = ui.page_fluid(
             ),
         )
     ),
-    ui.output_plot("plot", width="100%", height="600px")    
+    ui.output_plot("plot", width="100%", height="600px")
 )
 
 
@@ -155,20 +156,34 @@ def server(input, output, session):
     )
     async def download_txt():
         await asyncio.sleep(0.25)
-        yield "Função: " + input.input_funcao() + "\n"
-        yield "Limite Inferior: " + str(input.input_limite_inferior()) + "\n"
-        yield "Limite Superior: " + str(input.input_limite_superior()) + "\n"
-        yield "Argumentos: " + input.args_input() + "\n"
+        yield input.input_funcao() + "\n"
+        yield str(input.input_limite_inferior()) + "\n"
+        yield str(input.input_limite_superior()) + "\n"
+        yield input.args_input() + "\n"
 
     # Upload
     @reactive.calc
     def parsed_file():
-        file: list[FileInfo] | None = input.upload_txt()
-        print(file)
+        file = input.upload_txt()
         if file is None:
             return None
-        print(file[0])
-        return file[0]["datapath"]
+        file_info = file[0]  # Primeiro arquivo, já que `multiple=False`
+        try:
+            with open(file_info["datapath"], "r", encoding="utf-8") as f:
+                content = f.read()
+            return content.split("\n")
+        except Exception as e:
+            return f"Erro ao ler o arquivo: {e}"
+
+    @output
+    @render.text
+    def file_content():
+        content = parsed_file()
+        session.send_input_message("input_funcao", {"value": content[0]})
+        session.send_input_message("input_limite_inferior", {"value": content[1]})
+        session.send_input_message("input_limite_superior", {"value": content[2]})
+        session.send_input_message("args_input", {"value": content[3]})
+        return content if content else "Nenhum arquivo carregado."
 
 
 app = App(app_ui, server)
