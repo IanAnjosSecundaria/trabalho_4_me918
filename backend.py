@@ -15,6 +15,25 @@ from io import BytesIO
 import base64
 from urllib.parse import urlencode, parse_qs
 
+# Criar o script como uma string
+custom_script = """
+<script>
+Shiny.addCustomMessageHandler("update_query_string", function(params) {
+    const url = new URL(window.location.href);
+    Object.keys(params).forEach(key => {
+        url.searchParams.set(key, params[key]);
+    });
+    window.history.replaceState({}, '', url);
+});
+</script>
+"""
+
+# Adicionar o script ao <head>
+head_content = ui.tags.head(
+    ui.tags.title("Minha Aplicação Shiny"),
+    ui.HTML(custom_script),
+)
+
 app_ui = ui.page_fluid(
     # Layout
     ui.row(
@@ -49,53 +68,6 @@ def server(input, output, session):
     """
     Server Shiny
     """
-
-    # Atualiza a query string sempre que um input muda
-    @reactive.Effect
-    @reactive.event(input.input_funcao, input.input_limite_inferior, input.input_limite_superior, input.args_input)
-    def update_query_string():
-        try:
-            # Criar o dicionário de parâmetros
-            query_params = {
-                "input_funcao": input.input_funcao(),
-                "limite_inferior": input.input_limite_inferior(),
-                "limite_superior": input.input_limite_superior(),
-                "args_input": input.args_input(),
-            }
-            # Obter a URL base
-            current_url = session.get_url()  # Ex: http://localhost:8000/
-            base_url = current_url.split("?")[0]  # Remove query string anterior, se existir
-
-            # Atualizar a URL com os parâmetros
-            new_url = f"{base_url}?{urlencode(query_params)}"
-            session.redirect(new_url)  # Redireciona para a nova URL
-        except Exception as e:
-            print(f"Erro ao atualizar a query string: {e}")
-
-    @reactive.Effect
-    def initialize_from_query():
-        try:
-            # Obter a query string da URL
-            current_url = session.get_url()
-            query_string = current_url.split("?")[1] if "?" in current_url else ""
-            query_params = parse_qs(query_string)
-
-            if query_params:
-                # Extrair os valores
-                funcao = query_params.get("input_funcao", [""])[0]
-                limite_inferior = float(query_params.get("limite_inferior", [0])[0])
-                limite_superior = float(query_params.get("limite_superior", [10])[0])
-                args_input = query_params.get("args_input", [""])[0]
-
-                # Atualizar os inputs
-                session.send_input_message("input_funcao", {"value": funcao})
-                session.send_input_message("input_limite_inferior", {"value": limite_inferior})
-                session.send_input_message("input_limite_superior", {"value": limite_superior})
-                session.send_input_message("args_input", {"value": args_input})
-
-        except Exception as e:
-            print(f"Erro ao inicializar a partir da query string: {e}")
-
     # Reatividade se dará por essa função
     @reactive.Calc
     def dynamic_args():
