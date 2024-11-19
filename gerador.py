@@ -8,6 +8,7 @@ from distribuicoes import *
 
 # Bibliotecas não autorais
 from random import random
+from math import log10, log2, log
 
 
 def gerador(funcao:str, argumentos:list = []) -> "lambda":

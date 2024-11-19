@@ -37,3 +37,8 @@
 
 Palavras especiais
 
+### Bookmark
+
+É possível mandar o link com os parâmetros e função já setados.
+
+No link, é armazenado esses parâmetros, podendo assim compartilhar o link com a memória do site.
