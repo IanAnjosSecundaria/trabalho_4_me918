@@ -27,7 +27,20 @@ app_ui = ui.page_fluid(
     ui.row(
         ui.column(
             3,
-            ui.input_text("input_funcao", "Função", placeholder = "a*x**2 + b*x + c"),
+            ui.input_selectize(
+                "input_funcao",
+                "Função",
+                choices = ["a*x**2 + b*x + c", "exp(x, lambda_)", "normal(x, lambda_)"],  # Opções pré-definidas
+                #selected = "a*x**2 + b*x + c",  # Seleção inicial
+                multiple = False,
+                options = ({
+                    "placeholder": "Enter text",
+                    "render": ui.js_eval(
+                        '{option: function(item, escape) {return "<div><strong>Select " + escape(item.label) + "</strong></div>";}}'),
+                    "create": True,
+                    }
+                ),
+            ),
             ui.input_numeric("input_limite_inferior", "Limite Inferior", value = 0),
             ui.input_numeric("input_limite_superior", "Limite Superior", value = 10),
             ui.input_text("args_input", "Argumentos (separado por vírgula)", placeholder="argumento_1, argumento_2, argumento_3"),
