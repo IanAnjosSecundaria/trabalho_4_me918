@@ -4,6 +4,7 @@ Backend shiny
 
 # Bibliotecas autorais
 from gerador import gerador
+from distribuicoes import DISTRIBUICOES
 
 # Bibliotecas não autorais
 import asyncio
@@ -30,7 +31,7 @@ app_ui = ui.page_fluid(
             ui.input_selectize(
                 "input_funcao",
                 "Função",
-                choices = ["a*x**2 + b*x + c", "exp(x, lambda_)", "normal(x, lambda_)"],  # Opções pré-definidas
+                choices = DISTRIBUICOES,  # Opções pré-definidas
                 #selected = "a*x**2 + b*x + c",  # Seleção inicial
                 multiple = False,
                 options = ({
@@ -113,6 +114,7 @@ def server(input, output, session):
             x:list = [input.input_limite_inferior() + i * total / (n-1) for i in range(n)]
             
             y:list = [funcao_usuario(x = x, **args) for x in x]  # Criação de valores para o eixo y
+            total_area:float = sum(y) * (input.input_limite_superior() - input.input_limite_inferior())/n
             
         except Exception as error:
             if isinstance(error, NameError):
@@ -121,7 +123,7 @@ def server(input, output, session):
             else:
                 print(f"ERRO: {error}")
                 return None
-                            
+
 
         fig, ax = plt.subplots()
         ax.plot(x, y)  # Gráfico simples com os limites
@@ -132,7 +134,7 @@ def server(input, output, session):
         for line in horizontal_lines:
             ax.axhline(y = line, color = 'gray', linestyle = '--', linewidth = 0.5)
             
-        ax.set_title(f"Grafico da função [{input.input_limite_inferior()}, {input.input_limite_superior()}], n: {n}, dif: {dif_}")
+        ax.set_title(f"Grafico da função [{input.input_limite_inferior()}, {input.input_limite_superior()}], n: {n}, dif: {dif_}, Area: {total_area:0.02f}")
     
         return fig
 
