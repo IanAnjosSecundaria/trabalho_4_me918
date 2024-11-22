@@ -37,8 +37,12 @@
 
 Palavras especiais
 
-### Bookmark
+### Download e upload da memória
 
-É possível mandar o link com os parâmetros e função já setados.
+[COMO FUNCIONA]
 
-No link, é armazenado esses parâmetros, podendo assim compartilhar o link com a memória do site.
+## Erros conhecidos
+
+### Erro de divisão por zero
+
+### ...
