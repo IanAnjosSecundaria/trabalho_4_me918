@@ -6,12 +6,12 @@ from math import gamma
 #######################################################
 # Operações
 
-def fat(numero:int, o = None) -> int:
+def fat(numero:int) -> int:
     """
     Número fatorial
     """
     assert numero >= 0, "Não pode numero negativo"
-    return gamma(numero-1)
+    return gamma(numero+1)
 
 def raiz(numero:float, potencia:int = 2) -> float:
     """
