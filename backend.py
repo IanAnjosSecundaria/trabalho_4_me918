@@ -134,7 +134,7 @@ def server(input, output, session):
         for line in horizontal_lines:
             ax.axhline(y = line, color = 'gray', linestyle = '--', linewidth = 0.5)
             
-        ax.set_title(f"Grafico da função [{input.input_limite_inferior()}, {input.input_limite_superior()}], n: {n}, dif: {dif_}, Area: {total_area:0.02f}")
+        ax.set_title(f"Grafico da função [{input.input_limite_inferior()}, {input.input_limite_superior()}], Amostras: {n}, dif: {dif_}, Área: {int(total_area+0.05):0.02f}")
     
         return fig
 
@@ -150,7 +150,7 @@ def server(input, output, session):
             f"Limite Superior: {input.input_limite_inferior()}\n"
             f"Limite Inferior: {input.input_limite_superior()}\n"
             f"Argumentos: {', '.join(args)}\n"
-            f"Argumentos Dinâmicos: {dynamic_values}"
+            #f"Argumentos Dinâmicos: {dynamic_values}"
         )
         return output_text
 
